@@ -35,6 +35,7 @@ def operation(path, file_map, backup_map, size=1, limit=1):
             with zipfile.ZipFile('{}.zip'.format('{}/{}.{}.backup'.format(path, n[0], now_date_time.strftime("%Y-%m-%d_%H-%M-%S"))), 'w', zipfile.ZIP_DEFLATED) as backupZip:
                 backupZip.write(path_and_name, arcname=path_and_name)
                 size = sum([backupZip.file_size for backupZip in backupZip.filelist])
+            
             # Truncate the original log file
             with open(path_and_name, 'r+') as f:
                 f.truncate()

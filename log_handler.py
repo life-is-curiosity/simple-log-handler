@@ -69,7 +69,7 @@ def job(path, size, limit):
 
 # Help and Exception Message
 def exception():
-    print ('Usage : log_handler.py -p <path> -s <log size> -l <limit> -t <minute>')
+    print ('Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>')
     sys.exit()
 
 def main(argv):

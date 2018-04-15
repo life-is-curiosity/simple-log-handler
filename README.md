@@ -2,12 +2,11 @@
 It 's a simple log handler for log rotation
 
 
-<code>
-  Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>
-<code>  
-  
+```python
+Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>
 
-path : Get path as String e.g.C:/.../...  
+  
+path : Get path as String  e.g.C:/.../...  
 
 size (MB) : Int and Float   
 

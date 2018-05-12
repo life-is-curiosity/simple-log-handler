@@ -7,10 +7,8 @@ import sys
 import getopt
 import zipfile
 
-# Get file map and Backup file map from specified directory
 
-
-def get_map(start_path):
+def get_map(start_path):  # Get file map and Backup file map from specified directory
     file_map = {}
     backup_map = {}
     for dirpath, dirnames, filenames in os.walk(start_path):
@@ -23,10 +21,8 @@ def get_map(start_path):
                     os.path.join(dirpath, f))/1024/1024
     return file_map, backup_map
 
-# Handle Log behavior
 
-
-def operation(path, file_map, backup_map, size=1, limit=1):
+def operation(path, file_map, backup_map, size=1, limit=1):  # Handle Log behavior
     # Get files those have been more than <size> MB
     for n in dict(filter(lambda item: item[1] > size, file_map.items())).items():
         rm_file = ''
@@ -80,17 +76,13 @@ def operation(path, file_map, backup_map, size=1, limit=1):
             print('{} -> The process cannot access the file because it is being used by another process'.format(
                 now_date_time.strftime("%Y-%m-%d %H:%M:%S")))
 
-# Job combination
 
-
-def job(path, size, limit):
+def job(path, size, limit):  # Job combination
     file_map, backup_map = get_map(path)
     operation(path, file_map, backup_map, size, limit)
 
-# Help and Exception Message
 
-
-def exception():
+def exception():  # Help and Exception Message
     print('Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>')
     sys.exit()
 

@@ -3,22 +3,29 @@ import os
 import time
 import re
 import datetime
-import sys, getopt
+import sys
+import getopt
 import zipfile
 
 # Get file map and Backup file map from specified directory
+
+
 def get_map(start_path):
     file_map = {}
     backup_map = {}
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
             if bool(re.compile(r'.*backup').match(f)) is False:
-                file_map[f] = os.path.getsize(os.path.join(dirpath, f))/1024/1024
+                file_map[f] = os.path.getsize(
+                    os.path.join(dirpath, f))/1024/1024
             else:
-                backup_map[f] = os.path.getsize(os.path.join(dirpath, f))/1024/1024
+                backup_map[f] = os.path.getsize(
+                    os.path.join(dirpath, f))/1024/1024
     return file_map, backup_map
 
-# Handle Log behavior 
+# Handle Log behavior
+
+
 def operation(path, file_map, backup_map, size=1, limit=1):
     # Get files those have been more than <size> MB
     for n in dict(filter(lambda item: item[1] > size, file_map.items())).items():
@@ -26,11 +33,13 @@ def operation(path, file_map, backup_map, size=1, limit=1):
         early_date = None
         now_date_time = datetime.datetime.now()
         path_and_name = '{}/{}'.format(path, n[0])
-        print("{} -> Start to backup : {} ".format(now_date_time.strftime("%Y-%m-%d %H:%M:%S"), path_and_name))
+        print("{} -> Start to backup : {} ".format(
+            now_date_time.strftime("%Y-%m-%d %H:%M:%S"), path_and_name))
 
         try:
-            # Get all related backup files 
-            backup_dict = dict(filter(lambda item: bool(re.compile(r'{}.*backup'.format(n[0])).match(item[0])), backup_map.items()))
+            # Get all related backup files
+            backup_dict = dict(filter(lambda item: bool(re.compile(
+                r'{}.*backup'.format(n[0])).match(item[0])), backup_map.items()))
 
             print('backup_dict :--> {}'.format(backup_dict))
 
@@ -51,7 +60,8 @@ def operation(path, file_map, backup_map, size=1, limit=1):
             # Check if there are more than <limit> backup files
             if len(backup_dict) >= limit:
                 for n1 in backup_dict.items():
-                    current = datetime.datetime.fromtimestamp(os.stat('{}/{}'.format(path, n1[0])).st_mtime)
+                    current = datetime.datetime.fromtimestamp(
+                        os.stat('{}/{}'.format(path, n1[0])).st_mtime)
                     if early_date is None or current < early_date:
                         early_date = current
                         rm_file = n1[0]
@@ -60,23 +70,30 @@ def operation(path, file_map, backup_map, size=1, limit=1):
                 try:
                     removedFile = '{}/{}'.format(path, rm_file)
                     os.remove(removedFile)
-                    print("{} - Removed redundant log : {}, Size: {}".format(now_date_time.strftime("%Y-%m-%d %H:%M:%S"), removedFile, backup_map.get(rm_file)))
+                    print("{} - Removed redundant log : {}, Size: {}".format(now_date_time.strftime(
+                        "%Y-%m-%d %H:%M:%S"), removedFile, backup_map.get(rm_file)))
                     del backup_map[rm_file]
                 except OSError as e:
                     print('IO Error {}'.format(e))
 
         except PermissionError as pe:
-            print('{} -> The process cannot access the file because it is being used by another process'.format(now_date_time.strftime("%Y-%m-%d %H:%M:%S")))
+            print('{} -> The process cannot access the file because it is being used by another process'.format(
+                now_date_time.strftime("%Y-%m-%d %H:%M:%S")))
 
 # Job combination
+
+
 def job(path, size, limit):
     file_map, backup_map = get_map(path)
     operation(path, file_map, backup_map, size, limit)
 
 # Help and Exception Message
+
+
 def exception():
-    print ('Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>')
+    print('Usage : log_handler.py -p <path> -s <size> -l <limit> -t <minute>')
     sys.exit()
+
 
 def main(argv):
     size = 0
@@ -84,7 +101,8 @@ def main(argv):
     minute = 0
     path = ''
     try:
-        opts, args = getopt.getopt(argv,"hp:s:l:t:",["help", "path=","size=","limit=", "minute="])
+        opts, args = getopt.getopt(
+            argv, "hp:s:l:t:", ["help", "path=", "size=", "limit=", "minute="])
         if len(opts) != 4:
             exception()
         for opt, arg in opts:
@@ -104,6 +122,7 @@ def main(argv):
     while 1:
         schedule.run_pending()
         time.sleep(1)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
